@@ -46,7 +46,7 @@ def pytest_runtest_makereport(item, call):
     """Ante un fallo de UI, guarda PNG y lo adjunta al reporte HTML."""
     outcome = yield
     reporte = outcome.get_result()
-    extra = getattr(reporte, "extra", [])
+    extras_html = getattr(reporte, "extras", [])
 
     if reporte.when == "call" and reporte.failed:
         driver = item.funcargs.get("navegador") or item.funcargs.get("sesion_logueada")
@@ -55,8 +55,8 @@ def pytest_runtest_makereport(item, call):
             nombre = item.name.replace("/", "_").replace("[", "_").replace("]", "_")
             archivo = Path(RUTA_CAPTURAS) / f"{nombre}_{marca}.png"
             driver.save_screenshot(str(archivo))
-            log.error("Captura de fallo: %s", archivo)
-            extra.append(extras.png(str(archivo)))
-            extra.append(extras.text(f"Captura: {archivo.name}"))
+            log.error("Captura de fallo: %s | URL=%s", archivo, driver.current_url)
+            extras_html.append(extras.png(str(archivo)))
+            extras_html.append(extras.text(f"Captura: {archivo.name}"))
 
-    reporte.extra = extra
+    reporte.extras = extras_html
