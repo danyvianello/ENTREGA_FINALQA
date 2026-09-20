@@ -1,0 +1,8 @@
+{
+  "url_base": "https://jsonplaceholder.typicode.com",
+  "post_nuevo": {
+    "title": "Entrega final QA",
+    "body": "Post creado desde el framework de automatizacion",
+    "userId": 1
+  }
+}

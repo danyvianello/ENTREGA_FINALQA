@@ -1,0 +1,37 @@
+name: Pruebas automatizadas
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar pruebas
+        env:
+          HEADLESS: "1"
+        run: pytest -v --html=reports/reporte.html --self-contained-html
+
+      - name: Subir reportes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reportes-pytest
+          path: reports/

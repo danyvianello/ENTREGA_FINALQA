@@ -1,0 +1,4 @@
+usuario,contrasena,escenario,mensaje_esperado
+standard_user,secret_sauce,valido,
+locked_out_user,secret_sauce,bloqueado,"Epic sadface: Sorry, this user has been locked out."
+usuario_inventado,clave_incorrecta,invalido,"Epic sadface: Username and password do not match any user in this service"
