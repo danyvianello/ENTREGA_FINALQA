@@ -16,7 +16,4 @@ class CartPage(BasePage):
 
     def iniciar_checkout(self) -> None:
         self.clic(self.BOTON_CHECKOUT)
-        self.wait.until(
-            lambda driver: "checkout" in driver.current_url
-            or bool(driver.find_elements(By.CSS_SELECTOR, "#first-name, [data-test='firstName']"))
-        )
+        self.url_contiene("checkout-step-one")

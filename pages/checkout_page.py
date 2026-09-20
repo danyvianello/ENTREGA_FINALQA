@@ -20,10 +20,7 @@ class CheckoutPage(BasePage):
         self.escribir(self.CAMPO_APELLIDO, apellido)
         self.escribir(self.CAMPO_POSTAL, codigo_postal)
         self.clic(self.BOTON_CONTINUAR)
-        self.wait.until(
-            lambda driver: "checkout-step-two" in driver.current_url
-            or bool(driver.find_elements(*self.BOTON_FINALIZAR))
-        )
+        self.url_contiene("checkout-step-two")
 
     def finalizar(self) -> None:
         self.clic(self.BOTON_FINALIZAR)

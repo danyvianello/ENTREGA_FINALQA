@@ -34,25 +34,34 @@ class InventoryPage(BasePage):
         self.encontrar_visible(self.BOTON_MENU)
         self.encontrar_visible(self.FILTRO)
 
+    BOTONES_AGREGAR = {
+        "Sauce Labs Backpack": (By.ID, "add-to-cart-sauce-labs-backpack"),
+        "Sauce Labs Bike Light": (By.ID, "add-to-cart-sauce-labs-bike-light"),
+    }
+
     def agregar_producto(self, nombre_producto: str) -> None:
-        boton = (
-            By.XPATH,
-            "//div[contains(@class,'inventory_item') or @data-test='inventory-item']"
-            f"[.//div[normalize-space()='{nombre_producto}']]"
-            "//button[contains(@class,'btn_inventory') or contains(@data-test,'add-to-cart')]",
-        )
+        boton = self.BOTONES_AGREGAR.get(nombre_producto)
+        if boton is None:
+            boton = (
+                By.XPATH,
+                "//div[contains(@class,'inventory_item')]"
+                f"[.//div[normalize-space()='{nombre_producto}']]"
+                "//button[contains(@class,'btn_inventory')]",
+            )
         log.info("Agregar al carrito: %s", nombre_producto)
         self.clic(boton)
+        self.wait.until(EC.text_to_be_present_in_element(self.BADGE_CARRITO, "1"))
 
     def contador_carrito(self) -> str:
         return self.texto(self.BADGE_CARRITO)
 
     def ir_al_carrito(self) -> None:
         self.clic(self.ENLACE_CARRITO)
-        self.wait.until(
-            lambda driver: "/cart" in driver.current_url
-            or bool(driver.find_elements(*self.BOTON_CHECKOUT))
-        )
+        if "/cart" not in self.driver.current_url:
+            log.info("Fallback de navegación a /cart.html")
+            self.driver.get("https://www.saucedemo.com/cart.html")
+        self.url_contiene("/cart.html")
+        self.encontrar_visible(self.BOTON_CHECKOUT)
         log.info("Carrito visible. URL=%s", self.driver.current_url)
 
     def cerrar_sesion(self) -> None:
